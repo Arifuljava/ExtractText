@@ -1,32 +1,29 @@
 package com.example.methodechannelcreaate;
-
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
+import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import com.google.mlkit.vision.common.InputImage;
-
-
-
 import java.util.function.Consumer;
 public class MyJavaClass {
 
-    public static void sayHello(String name, Context context, SuccessCallback successCallback, FailureCallback failureCallback) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ccf);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static void sayHello(Bitmap bitmapw, Context context, SuccessCallback successCallback, FailureCallback failureCallback) {
+        Bitmap bitmap = bitmapw;
         InputImage image = InputImage.fromBitmap(bitmap, 0);
         OCRManager ocrManager = new OCRManager();
         List<String> processedTextList = new ArrayList<>();
 
         ocrManager.performOCR(image, new OCRManager.OCRCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public List<String> onOCRComplete(List<String> detectedTextList) {
                 try {
@@ -73,6 +70,7 @@ public class MyJavaClass {
         }
         return updatedTextList;
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void determinePercentage(List<String> detectedTextList, Consumer<List<String>> callback) {
         List<String> newList = new ArrayList<>();
         for (String text : detectedTextList) {
@@ -94,11 +92,12 @@ public class MyJavaClass {
                 }
             }
         }
-        callback.accept(newList);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            callback.accept(newList);
+        }
     }
     public static List<String> processTextList(List<String> textList) {
         List<String> updatedTextList = new ArrayList<>();
-
         for (String text : textList) {
             int length = text.length();
             for (int j = 0; j < length; j += 6) {
@@ -113,12 +112,10 @@ public class MyJavaClass {
                 }
             }
         }
-
         return updatedTextList;
     }
     public static List<String> sortTextListByPrefix(List<String> textList) {
         List<String> sortedTextList = new ArrayList<>(textList);
-
         Collections.sort(sortedTextList, new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
@@ -127,12 +124,10 @@ public class MyJavaClass {
                 return s1Prefix.compareTo(s2Prefix);
             }
         });
-
         return sortedTextList;
     }
     public static List<String> modifyTextList(List<String> textList) {
         List<String> modifiedTextList = new ArrayList<>();
-
         for (String text : textList) {
             if (!text.isEmpty()) {
                 int length = text.length();
@@ -143,7 +138,6 @@ public class MyJavaClass {
                 modifiedTextList.add("");
             }
         }
-
         return modifiedTextList;
     }
     public static List<String> removeWhitespaceFromList(List<String> textList) {
@@ -153,7 +147,6 @@ public class MyJavaClass {
             String cleanedText = text.replaceAll("\\s+", "");
             cleanedTextList.add(cleanedText);
         }
-
         return cleanedTextList;
     }
 
@@ -164,7 +157,6 @@ public class MyJavaClass {
             String cleanedText = text.replaceAll("[^a-zA-Z0-9\\s+]", "");
             cleanedTextList.add(cleanedText);
         }
-
         return cleanedTextList;
     }
 

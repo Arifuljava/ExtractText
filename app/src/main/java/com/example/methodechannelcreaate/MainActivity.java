@@ -1,68 +1,38 @@
 package com.example.methodechannelcreaate;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import io.flutter.embedding.android.FlutterActivity;
-
-
-import android.content.Context;
-import android.content.Intent;
-
-import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import java.util.List;
-
-import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
-
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
-
-
-
-
 public class MainActivity extends FlutterActivity {
-
     private static final String CHANNEL_NAME = "com.github.Arifuljava:GrozziieBlutoothSDk:v1.0.1";
-
-
-
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
-
-        //ActivityLauncher.registerWith(this);
-
         new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), CHANNEL_NAME).setMethodCallHandler(
                 (call, result) -> {
-                     if(call.method.equals("sendDataToDotPrinter"))
+                     if(call.method.equals("attendencemachineAndroidSDK"))
                     {
-                        String name = "AAAAA";
-                        MyJavaClass.sayHello(name, getApplicationContext(), new MyJavaClass.SuccessCallback() {
+                        Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.ccf);
+                        MyJavaClass.sayHello(bitmap,getApplicationContext(), new MyJavaClass.SuccessCallback() {
                             @Override
-                            public void onSuccess(List<String> processedTextList) {
-                                // Handle success scenario
-                                Log.d("Success", "Processed text list: " + processedTextList);
+                            public void onSuccess(List<String> processedTextList){
                                 result.success(processedTextList);
                             }
                         }, new MyJavaClass.FailureCallback() {
                             @Override
                             public void onFailure(Exception e) {
-                                // Handle failure scenario
-                                Log.e("Failure", "Error occurred: " + e.getMessage());
                             }
                         });
-
-
-
-
                     }
-
                 }
         );
     }
 
 }
 
-//finishActivity
+

@@ -1,7 +1,10 @@
 package com.example.methodechannelcreaate;
 
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
@@ -17,30 +20,27 @@ import java.util.List;
 public class OCRManager {
     private static final String TAG = "OCRManager";
     private final List<String> detectedTextList = new ArrayList<>();
-
     public interface OCRCallback {
         List<String> onOCRComplete(List<String> detectedTextList);
     }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void performOCR(InputImage image, OCRCallback callback) {
         TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
         recognizer.process(image)
                 .addOnSuccessListener(visionText -> {
                     List<String> result = processTextBlocks(visionText);
-                    Log.e("KKKKK", "" + result);
                     detectedTextList.addAll(result);
                     if (callback != null) {
                         callback.onOCRComplete(result);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error performing OCR: " + e.getMessage());
-                    //detectedTextList.add("0");
                     if (callback != null) {
                         callback.onOCRComplete(detectedTextList);
                     }
                 });
     }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private List<String> processTextBlocks(Text visionText) {
         List<String> result = new ArrayList<>();
         List<Text.TextBlock> blocks = visionText.getTextBlocks();
@@ -56,7 +56,7 @@ public class OCRManager {
                     }
                 }
                 String xxx = text;
-                result.add(xxx); // Add the xxx string to the result list
+                result.add(xxx);
             }
         }
         List<List<String>> columns = groupTextByColumns(observations);
@@ -71,6 +71,7 @@ public class OCRManager {
         return result;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private List<List<String>> groupTextByColumns(List<TextObservation> observations) {
         Collections.sort(observations, Comparator.comparingInt(o -> o.boundingBox.left));
         List<List<String>> columns = new ArrayList<>();
@@ -79,10 +80,8 @@ public class OCRManager {
         for (TextObservation observation : observations) {
             int currentX = observation.boundingBox.left;
             if (previousX == -1 || Math.abs(currentX - previousX) < 20) {
-                // Adjust threshold as needed
                 currentColumn.add(observation.text);
             } else {
-                // Ensure the current column has 16 rows
                 while (currentColumn.size() < 16) {
                     currentColumn.add("0");
                 }
@@ -92,7 +91,6 @@ public class OCRManager {
             }
             previousX = currentX;
         }
-        // Add the last column and ensure it has 16 rows
         if (!currentColumn.isEmpty()) {
             while (currentColumn.size() < 16) {
                 currentColumn.add("0");
@@ -105,7 +103,6 @@ public class OCRManager {
     private static class TextObservation {
         String text;
         Rect boundingBox;
-
         TextObservation(String text, Rect boundingBox) {
             this.text = text;
             this.boundingBox = boundingBox;
