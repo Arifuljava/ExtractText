@@ -44,7 +44,7 @@ public class MainActivity extends FlutterActivity {
         }
         Bitmap targetbitmap = bitmapList.get(0) ;
         Bitmap bitmap = targetbitmap;
-        MyJavaClass.sayHello(bitmap,getApplicationContext(), new MyJavaClass.SuccessCallback() {
+        MyJavaClass.SendBitmap(bitmap,getApplicationContext(), new MyJavaClass.SuccessCallback() {
             @Override
             public void onSuccess(List<String> processedTextList){
                 result.success(processedTextList);

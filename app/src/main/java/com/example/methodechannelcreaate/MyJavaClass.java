@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public class MyJavaClass {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void sayHello(Bitmap bitmapw, Context context, SuccessCallback successCallback, FailureCallback failureCallback) {
+    public static void SendBitmap(Bitmap bitmapw, Context context, SuccessCallback successCallback, FailureCallback failureCallback) {
         Bitmap bitmap = bitmapw;
         InputImage image = InputImage.fromBitmap(bitmap, 0);
         OCRManager ocrManager = new OCRManager();
