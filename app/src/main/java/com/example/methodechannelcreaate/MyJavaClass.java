@@ -21,31 +21,33 @@ public class MyJavaClass {
         InputImage image = InputImage.fromBitmap(bitmap, 0);
         OCRManager ocrManager = new OCRManager();
         List<String> processedTextList = new ArrayList<>();
-
         ocrManager.performOCR(image, new OCRManager.OCRCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public List<String> onOCRComplete(List<String> detectedTextList) {
                 try {
-                    // Process the detectedTextList here
                     detectedTextList = filterdatalist(detectedTextList);
                     detectedTextList = cleanTextList(detectedTextList);
                     detectedTextList = removeWhitespaceFromList(detectedTextList);
                     detectedTextList = modifyTextList(detectedTextList);
                     detectedTextList = sortTextListByPrefix(detectedTextList);
                     detectedTextList = processTextList(detectedTextList);
+                    List<String> finalDetectedTextList = detectedTextList;
                     determinePercentage(detectedTextList, resultList -> {
-                        System.out.println("Resulting List:" + resultList);
-                        System.out.println("Resulting List:" + resultList.size());
                         processedTextList.addAll(resultList);
-                    });
+                        for(int i = 0; i< finalDetectedTextList.size() ; i++)
+                        {
+                            String text = finalDetectedTextList.get(i).toString() ;
+                            String percentage = processedTextList.get(i).toString() ;
+                            String newtext = text+"("+percentage+")";
+                            finalDetectedTextList.set(i, newtext);
 
-                    Log.d("kkkjjjj", "" + detectedTextList.size());
-                    successCallback.onSuccess(detectedTextList);
+                        }
+                    });
+                    successCallback.onSuccess(finalDetectedTextList);
                 } catch (Exception e) {
                     failureCallback.onFailure(e);
                 }
-
                 return processedTextList;
             }
         });
@@ -95,6 +97,9 @@ public class MyJavaClass {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             callback.accept(newList);
         }
+        else {
+            callback.accept(newList);
+        }
     }
     public static List<String> processTextList(List<String> textList) {
         List<String> updatedTextList = new ArrayList<>();
@@ -142,7 +147,6 @@ public class MyJavaClass {
     }
     public static List<String> removeWhitespaceFromList(List<String> textList) {
         List<String> cleanedTextList = new ArrayList<>();
-
         for (String text : textList) {
             String cleanedText = text.replaceAll("\\s+", "");
             cleanedTextList.add(cleanedText);
@@ -152,7 +156,6 @@ public class MyJavaClass {
 
     public static List<String> cleanTextList(List<String> textList) {
         List<String> cleanedTextList = new ArrayList<>();
-
         for (String text : textList) {
             String cleanedText = text.replaceAll("[^a-zA-Z0-9\\s+]", "");
             cleanedTextList.add(cleanedText);

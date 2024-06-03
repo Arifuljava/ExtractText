@@ -70,7 +70,6 @@ public class OCRManager {
         }
         return result;
     }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     private List<List<String>> groupTextByColumns(List<TextObservation> observations) {
         Collections.sort(observations, Comparator.comparingInt(o -> o.boundingBox.left));
@@ -99,7 +98,6 @@ public class OCRManager {
         }
         return columns;
     }
-
     private static class TextObservation {
         String text;
         Rect boundingBox;
